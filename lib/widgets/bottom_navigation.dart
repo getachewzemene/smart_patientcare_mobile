@@ -3,6 +3,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:smart_health_assistant/constants/widget_params.dart';
 import 'package:smart_health_assistant/screens/agora_screen.dart';
 import 'package:smart_health_assistant/screens/appointment_screen.dart';
+import 'package:smart_health_assistant/screens/doctors_list_screen.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({Key? key}) : super(key: key);
@@ -23,7 +24,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         break;
       case 2:
         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const AppointmentScreen()));
+            MaterialPageRoute(builder: (context) => const DoctorsListScreen()));
         break;
     }
   }

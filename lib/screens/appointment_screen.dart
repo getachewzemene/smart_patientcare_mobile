@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'package:smart_health_assistant/providers/api_notifier.dart';
 import 'package:smart_health_assistant/widgets/custom_snackbar.dart';
 
 class AppointmentScreen extends StatefulWidget {
@@ -14,6 +16,12 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   final key = GlobalKey<FormState>();
   bool isLoading = false;
   @override
+  void initState() {
+    // getDoctorsData();
+    super.initState();
+  }
+
+  @override
   void dispose() {
     titleController.dispose();
     super.dispose();
@@ -28,8 +36,16 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       setState(() {
         isLoading = false;
       });
+      Map<String, dynamic> appointmentData = {
+        "id": 1,
+        "title": titleController.text,
+        "status": "pending",
+        "doctorId": 3,
+        "patinetId": 6
+      };
+      // print(appointmentData);
+      ApiNotifier().addAppointment(appointmentData);
       customSnackBar(false, context, "appointment submit success");
-      debugPrint(titleController.text);
     } else {
       setState(() {
         isLoading = false;
