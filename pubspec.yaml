@@ -30,6 +30,7 @@ dependencies:
   agora_rtc_engine: ^5.2.0
   agora_uikit: ^1.0.2
   cupertino_icons: ^1.0.2
+  curved_navigation_bar: ^1.0.3
   flutter:
     sdk: flutter
   flutter_background: ^1.1.0
@@ -37,9 +38,10 @@ dependencies:
   flutter_svg: ^1.0.3
   flutter_webrtc: ^0.8.9
   flutter_webrtc_wrapper: ^1.0.1
-  geolocator: ^8.2.0
+  geolocator: ^9.0.1
   google_maps_flutter: ^2.1.8
   http: ^0.13.4
+  introduction_screen: ^3.0.2
   provider: ^6.0.2
   shared_preferences: ^2.0.15
   url_launcher: ^6.0.20
@@ -60,11 +62,7 @@ flutter:
   uses-material-design: true
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/user.jpg
-    - assets/images/dr1.jpg
-    - assets/images/dr2.jpg
-    - assets/images/dr3.jpg
-    - assets/images/dr4.jpg
+    - assets/images/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see

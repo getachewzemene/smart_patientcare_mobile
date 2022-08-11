@@ -4,7 +4,7 @@ import "package:flutter/material.dart";
 
 const appId = "cd57515713a342bca69b051e01ecc9a8";
 const token =
-    "006cd57515713a342bca69b051e01ecc9a8IAAEO5r3wLP352Z6qKZzuntZJfMfX6lprDSXDU0dGkHZDGmn4GYAAAAAEADYPDyUloW9YgEAAQCWhb1i";
+    "006cd57515713a342bca69b051e01ecc9a8IACKfHlAKQtvnkLNaSeeKV9Bj7UELurGyIzOL4kLIagXOvMW4N0AAAAAEABiLYCET1L1YgEAAQBPUvVi";
 
 class AgoraScreen extends StatefulWidget {
   const AgoraScreen({Key? key}) : super(key: key);
@@ -43,8 +43,8 @@ class _AgoraScreenState extends State<AgoraScreen> {
               lighteningLevel: 0.8,
               smoothnessLevel: 0.4,
             )),
-        agoraConnectionData: AgoraConnectionData(
-            appId: appId, channelName: "meet2", tempToken: token),
+        agoraConnectionData:
+            AgoraConnectionData(appId: appId, channelName: "meet3"),
         enabledPermission: [Permission.camera, Permission.microphone]);
 
     await client!.initialize();
@@ -60,49 +60,39 @@ class _AgoraScreenState extends State<AgoraScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Agora Video Call"),
-      ),
-      body: client!.isInitialized
-          ? Stack(
-              children: [
-                AgoraVideoViewer(
-                  client: client!,
-                  layoutType: Layout.floating,
-                  enableHostControls: true,
-                  showAVState: true,
-                  showNumberOfUsers: true,
-                  videoRenderMode: VideoRenderMode.Fit,
-                  floatingLayoutContainerHeight: 300,
-                  floatingLayoutContainerWidth: 200,
-                  // disabledVideoWidget: Container(
-                  //     height: MediaQuery.of(context).size.height,
-                  //     width: MediaQuery.of(context).size.width,
-                  //     color: Colors.black,
-                  //     child: const Center(
-                  //       child: Text("Getch",
-                  //           style: TextStyle(fontSize: 25.0, color: Colors.white)),
-                  //     )), // Add this to enable host controls
-                ),
-                if (client!.users.length == 1)
-                  const Center(
-                    child: Text("Wait Participants to join"),
-                  ),
-                AgoraVideoButtons(
-                  autoHideButtonTime: 10,
-                  autoHideButtons: true,
-                  client: client!,
-                ),
-              ],
-            )
-          : const Center(
-              child: CircularProgressIndicator(
-                value: 1.0,
-                color: Colors.redAccent,
-                backgroundColor: Colors.blueGrey,
-                strokeWidth: 6.0,
-              ),
+        appBar: AppBar(
+          title: const Text("Agora Video Call"),
+        ),
+        body: Stack(
+          children: [
+            AgoraVideoViewer(
+              client: client!,
+              layoutType: Layout.floating,
+              enableHostControls: true,
+              showAVState: true,
+              showNumberOfUsers: true,
+              videoRenderMode: VideoRenderMode.Fit,
+              floatingLayoutContainerHeight: 300,
+              floatingLayoutContainerWidth: 200,
+              // disabledVideoWidget: Container(
+              //     height: MediaQuery.of(context).size.height,
+              //     width: MediaQuery.of(context).size.width,
+              //     color: Colors.black,
+              //     child: const Center(
+              //       child: Text("Getch",
+              //           style: TextStyle(fontSize: 25.0, color: Colors.white)),
+              //     )), // Add this to enable host controls
             ),
-    );
+            if (client!.users.length == 1)
+              const Center(
+                child: Text("Wait Participants to join"),
+              ),
+            AgoraVideoButtons(
+              autoHideButtonTime: 10,
+              autoHideButtons: true,
+              client: client!,
+            ),
+          ],
+        ));
   }
 }
