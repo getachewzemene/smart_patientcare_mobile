@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_health_assistant/widgets/custom_snackbar.dart';
 
 class AppointmentScreen extends StatefulWidget {
   const AppointmentScreen({Key? key}) : super(key: key);
@@ -11,14 +12,32 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   final titleController = TextEditingController();
 
   final key = GlobalKey<FormState>();
-
+  bool isLoading = false;
   @override
   void dispose() {
     titleController.dispose();
     super.dispose();
   }
 
-  void submitAppointment() {}
+  void submitAppointment() async {
+    setState(() {
+      isLoading = true;
+    });
+    await Future.delayed(const Duration(seconds: 2), () {});
+    if (key.currentState!.validate()) {
+      setState(() {
+        isLoading = false;
+      });
+      customSnackBar(false, context, "appointment submit success");
+      debugPrint(titleController.text);
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      customSnackBar(true, context, "invalid appointment submition");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,20 +74,21 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                       const SizedBox(
                         height: 20.0,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          MaterialButton(
-                            child: const Text("Submit"),
-                            color: Colors.blueGrey,
-                            textColor: Colors.white,
-                            height: 40.0,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0)),
-                            onPressed: submitAppointment,
-                          ),
-                        ],
+                      Center(
+                        child: MaterialButton(
+                          child: isLoading
+                              ? const SizedBox(
+                                  height: 25,
+                                  width: 25,
+                                  child: CircularProgressIndicator())
+                              : const Text("Submit"),
+                          color: Colors.blueGrey,
+                          textColor: Colors.white,
+                          height: 40.0,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0)),
+                          onPressed: submitAppointment,
+                        ),
                       ),
                     ])),
           ),

@@ -41,7 +41,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
   final PageController pageController = PageController();
   void startMeeting() async {
     // print("display name:" + widget.name!);
-    final String userId = await loadUserId();
+    final String userId = await getUserId();
     meetingHelper = WebRTCMeetingHelper(
         url: "http://10.161.84.64:4000",
         meetingId: widget.meeting!.id,

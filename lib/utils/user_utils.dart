@@ -2,7 +2,7 @@ import 'package:uuid/uuid.dart';
 import "package:shared_preferences/shared_preferences.dart";
 
 var uuid = const Uuid();
-Future<String> loadUserId() async {
+Future<String> getUserId() async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
   String? userId;
   if (preferences.containsKey("userId")) {

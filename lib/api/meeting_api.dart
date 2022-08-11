@@ -6,7 +6,7 @@ import '../utils/user_utils.dart';
 
 String BASE_URL = getBaseUrl;
 Future<http.Response?> startMeeting() async {
-  String userId = await loadUserId();
+  String userId = await getUserId();
   Map<String, String> requestHeaders = {'content-Type': "application/json"};
   var response = await http.post(Uri.parse("$BASE_URL/start"),
       headers: requestHeaders,

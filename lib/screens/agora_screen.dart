@@ -2,9 +2,9 @@ import 'package:agora_uikit/agora_uikit.dart';
 
 import "package:flutter/material.dart";
 
-const appId = "cd57515713a342bca69b051e01ecc9a8";
+const appId = "19640a9b4858430593643c0f0d88aa04";
 const token =
-    "006cd57515713a342bca69b051e01ecc9a8IACKfHlAKQtvnkLNaSeeKV9Bj7UELurGyIzOL4kLIagXOvMW4N0AAAAAEABiLYCET1L1YgEAAQBPUvVi";
+    "00619640a9b4858430593643c0f0d88aa04IAADtzVv3do+OqfJG6A1pRFcNa2WxUEtmhRi306CmTaMLt2UobkAAAAAEABiLYCEGO31YgEAAQAY7fVi";
 
 class AgoraScreen extends StatefulWidget {
   const AgoraScreen({Key? key}) : super(key: key);
@@ -22,7 +22,7 @@ class _AgoraScreenState extends State<AgoraScreen> {
     super.initState();
   }
 
-  void initAgora() async {
+  Future<void> initAgora() async {
     client = AgoraClient(
         agoraEventHandlers: AgoraRtcEventHandlers(
           leaveChannel: (state) => Navigator.pop(context),
@@ -43,8 +43,8 @@ class _AgoraScreenState extends State<AgoraScreen> {
               lighteningLevel: 0.8,
               smoothnessLevel: 0.4,
             )),
-        agoraConnectionData:
-            AgoraConnectionData(appId: appId, channelName: "meet3"),
+        agoraConnectionData: AgoraConnectionData(
+            appId: appId, channelName: "meeting-demo", tempToken: token),
         enabledPermission: [Permission.camera, Permission.microphone]);
 
     await client!.initialize();
@@ -59,40 +59,49 @@ class _AgoraScreenState extends State<AgoraScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(client);
     return Scaffold(
         appBar: AppBar(
           title: const Text("Agora Video Call"),
         ),
-        body: Stack(
-          children: [
-            AgoraVideoViewer(
-              client: client!,
-              layoutType: Layout.floating,
-              enableHostControls: true,
-              showAVState: true,
-              showNumberOfUsers: true,
-              videoRenderMode: VideoRenderMode.Fit,
-              floatingLayoutContainerHeight: 300,
-              floatingLayoutContainerWidth: 200,
-              // disabledVideoWidget: Container(
-              //     height: MediaQuery.of(context).size.height,
-              //     width: MediaQuery.of(context).size.width,
-              //     color: Colors.black,
-              //     child: const Center(
-              //       child: Text("Getch",
-              //           style: TextStyle(fontSize: 25.0, color: Colors.white)),
-              //     )), // Add this to enable host controls
-            ),
-            if (client!.users.length == 1)
-              const Center(
-                child: Text("Wait Participants to join"),
-              ),
-            AgoraVideoButtons(
-              autoHideButtonTime: 10,
-              autoHideButtons: true,
-              client: client!,
-            ),
-          ],
+        body: FutureBuilder(
+          future: initAgora(),
+          builder: (context, _) => client != null
+              ? Stack(
+                  children: [
+                    AgoraVideoViewer(
+                      client: client!,
+                      layoutType: Layout.floating,
+                      enableHostControls: true,
+                      showAVState: true,
+                      showNumberOfUsers: true,
+                      videoRenderMode: VideoRenderMode.Fit,
+                      floatingLayoutContainerHeight: 300,
+                      floatingLayoutContainerWidth: 200,
+                      // disabledVideoWidget: Container(
+                      //     height: MediaQuery.of(context).size.height,
+                      //     width: MediaQuery.of(context).size.width,
+                      //     color: Colors.black,
+                      //     child: const Center(
+                      //       child: Text("Getch",
+                      //           style: TextStyle(fontSize: 25.0, color: Colors.white)),
+                      //     )), // Add this to enable host controls
+                    ),
+                    if (client!.users.length == 1)
+                      const Center(
+                        child: Text("Wait Participants to join"),
+                      ),
+                    AgoraVideoButtons(
+                      autoHideButtonTime: 10,
+                      autoHideButtons: true,
+                      client: client!,
+                    ),
+                  ],
+                )
+              : const Center(
+                  child: CircularProgressIndicator(
+                  semanticsLabel: "waiting for connection",
+                )),
         ));
   }
 }
