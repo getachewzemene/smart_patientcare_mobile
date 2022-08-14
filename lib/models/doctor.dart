@@ -42,7 +42,7 @@ class Doctor {
         dob: DateTime.parse(json["DOB"]),
         address: json["address"] ?? "",
         role: json["role"] ?? "",
-        doctor: DoctorData.fromJson(json["doctor"]),
+        doctor: DoctorData.fromJson(json["userDoctor"]),
       );
 }
 

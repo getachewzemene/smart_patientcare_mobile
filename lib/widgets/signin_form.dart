@@ -129,7 +129,6 @@ class _SignInFormState extends State<SignInForm> {
         customSnackBar(false, context, "sign in success");
         _emailController.clear();
         _passController.clear();
-        await Future.delayed(const Duration(seconds: 1), () {});
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => const HomeScreen()));
       } else {

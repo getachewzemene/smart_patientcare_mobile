@@ -13,6 +13,7 @@ class SignInScreen extends StatelessWidget {
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text("Sign in"),
+        backgroundColor: contentColor,
       ),
       body: Stack(
         fit: StackFit.expand,
@@ -40,7 +41,7 @@ class SignInScreen extends StatelessWidget {
                           onPressed: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SignUpScreen(),
+                              builder: (context) => const SignUpScreen(),
                             ),
                           ),
                           child: const Text(

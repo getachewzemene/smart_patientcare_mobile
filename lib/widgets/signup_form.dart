@@ -257,7 +257,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
       decoration: InputDecoration(
         prefixIcon: const Icon(Icons.calendar_today), //icon of text field
-        labelText: "Enter Date",
+        labelText: "Date of Birth",
         labelStyle: const TextStyle(color: Colors.black),
         filled: true,
         fillColor: Colors.white,

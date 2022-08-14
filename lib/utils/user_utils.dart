@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shortid/shortid.dart';
 import 'package:uuid/uuid.dart';
 import "package:shared_preferences/shared_preferences.dart";
@@ -18,4 +20,10 @@ Future<String> getUserId() async {
 String generateId() {
   String id = shortid.generate();
   return id;
+}
+
+Future<String?> getCurrentUser() async {
+  SharedPreferences userPreference = await SharedPreferences.getInstance();
+  var currentUser = userPreference.getString("user");
+  return currentUser;
 }

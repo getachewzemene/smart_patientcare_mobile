@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:smart_health_assistant/constants/widget_params.dart';
-import 'package:smart_health_assistant/screens/agora_screen.dart';
-import 'package:smart_health_assistant/screens/appointment_screen.dart';
 import 'package:smart_health_assistant/screens/doctors_list_screen.dart';
+import 'package:smart_health_assistant/screens/video_call/videocall_screen_wrapper.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({Key? key}) : super(key: key);
@@ -19,8 +18,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
   _goToScreen(index) {
     switch (index) {
       case 1:
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const AgoraScreen()));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const VideoCallScreenWrapper()));
         break;
       case 2:
         Navigator.push(context,
@@ -42,7 +43,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
             children: const [
               Icon(
                 Icons.home,
-                size: 25,
+                color: iconColor,
+                size: iconSize,
               ),
               Text("home", style: bootomText)
             ]),
@@ -52,7 +54,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
             children: const [
               Icon(
                 Icons.video_call,
-                size: 25,
+                color: iconColor,
+                size: iconSize,
               ),
               Text(
                 "video-call",
@@ -66,7 +69,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
             children: const [
               Icon(
                 Icons.person_add,
-                size: 25,
+                color: iconColor,
+                size: iconSize,
               ),
               Text(
                 "appointment",
@@ -80,7 +84,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
             children: const [
               Icon(
                 Icons.person,
-                size: 25,
+                color: iconColor,
+                size: iconSize,
               ),
               Text(
                 "profile",
@@ -89,9 +94,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
               )
             ]),
       ],
-      color: Colors.white,
-      buttonBackgroundColor: Colors.cyanAccent,
-      backgroundColor: Colors.yellow,
+      color: contentColor,
+      buttonBackgroundColor: contentColor,
+      backgroundColor: Color.fromARGB(255, 195, 202, 195),
       animationCurve: Curves.easeInOut,
       animationDuration: const Duration(milliseconds: 600),
       onTap: (index) {

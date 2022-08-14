@@ -6,9 +6,16 @@ import '/api/appointment_api.dart';
 class ApiNotifier extends ChangeNotifier {
   bool isLoading = false;
   List<Doctor?> doctorList = [];
-  void addAppointment(Map<String, dynamic> appointmentData) async {
+  String successMessage = "";
+  String errorMessage = "";
+  Future<void> addAppointment(Map<String, dynamic> appointmentData) async {
     var response = await createAppointment(appointmentData);
-    debugPrint(response);
+    if (response.statusCode == 200) {
+      successMessage = "appointment request added success";
+    } else {
+      errorMessage = response.body;
+    }
+    // debugPrint(responseMessage);
     notifyListeners();
   }
 

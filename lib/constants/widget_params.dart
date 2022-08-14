@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 
-const bootomText = TextStyle(fontSize: 10.0, fontWeight: FontWeight.normal);
+const bootomText = TextStyle(
+    fontSize: 10.0, fontWeight: FontWeight.normal, color: Colors.white);
 const errorTextStyle = TextStyle(color: Colors.red);
 const successtextStyle = TextStyle(color: Colors.black);
-const primaryColor = Color(0xFF255ED6);
+const contentColor = Color.fromARGB(255, 46, 125, 189);
+const iconColor = Color.fromARGB(255, 190, 10, 151);
+const contentTextStyle =
+    TextStyle(fontWeight: FontWeight.w400, fontSize: 16.0, color: Colors.white);
+const iconSize = 25.0;
 const textColor = Color(0xFF35364F);
 const backgroundColor = Color(0xFFE6EFF9);
 const redColor = Color(0xFFE85050);
-const boldTextStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0);
+const boldTextStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0);
 const defaultPadding = 16.0;
 const emailError = 'Enter a valid email address';
 const requiredField = "This field is required";

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:flutter_webrtc_wrapper/flutter_webrtc_wrapper.dart';
+import 'package:smart_health_assistant/constants/widget_params.dart';
 import '/widgets/remot_connection.dart';
 import '../widgets/control_panel.dart';
 import '../utils/user_utils.dart';
@@ -112,7 +113,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: contentColor,
       body: _buildMeetingRoom(),
       bottomNavigationBar: ControlPanel(
         audioEnabled: isAudioEnabled(),
