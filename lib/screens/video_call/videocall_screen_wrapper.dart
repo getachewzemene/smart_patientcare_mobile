@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:smart_health_assistant/api/token_api.dart';
+import 'package:smart_health_assistant/widgets/custom_snackbar.dart';
 import './video_call_screen.dart';
 
 class VideoCallScreenWrapper extends StatefulWidget {
@@ -13,6 +15,7 @@ class _VideoCallScreenWrapperState extends State<VideoCallScreenWrapper> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text("Video Call"),
       ),
@@ -40,11 +43,21 @@ class _VideoCallScreenWrapperState extends State<VideoCallScreenWrapper> {
                 width: MediaQuery.of(context).size.width * 0.5,
                 child: MaterialButton(
                   color: Colors.blue,
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) =>
-                          VideoCallScreen(channelName: _channelController.text),
-                    ));
+                  onPressed: () async {
+                    var tokenParams = {
+                      "channelName": _channelController.text.trim(),
+                      "isPublisher": "true",
+                    };
+                    var tokenResponse = await getToken(tokenParams);
+                    if (tokenResponse!.statusCode == 200) {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => VideoCallScreen(
+                            channelName: _channelController.text,
+                            tokenData: tokenResponse.body),
+                      ));
+                    } else {
+                      customSnackBar(true, context, "Invalid token try again");
+                    }
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,

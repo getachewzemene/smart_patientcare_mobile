@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import "package:shared_preferences/shared_preferences.dart";
 
 var uuid = const Uuid();
+var currentUser;
 Future<String> getUserId() async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
   String? userId;
@@ -24,6 +25,6 @@ String generateId() {
 
 Future<String?> getCurrentUser() async {
   SharedPreferences userPreference = await SharedPreferences.getInstance();
-  var currentUser = userPreference.getString("user");
+  currentUser = userPreference.getString("user");
   return currentUser;
 }

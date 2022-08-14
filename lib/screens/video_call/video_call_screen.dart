@@ -3,20 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:agora_rtc_engine/rtc_local_view.dart' as rtc_local_view;
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as rtc_remote_view;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:smart_health_assistant/widgets/custom_snackbar.dart';
 
 const appId = "19640a9b4858430593643c0f0d88aa04";
 const token =
     "006cd57515713a342bca69b051e01ecc9a8IAACK/dFWrbXwBeXAwmRnMbeWkZ3LF6yrwUUYoK4GeAOF4CU4W8AAAAAEABiLYCECfn5YgEAAQAI+fli";
 
 class VideoCallScreen extends StatefulWidget {
-  const VideoCallScreen({Key? key, required this.channelName})
+  const VideoCallScreen(
+      {Key? key, required this.channelName, required this.tokenData})
       : super(key: key);
   final String channelName;
+  final tokenData;
   @override
   State<VideoCallScreen> createState() => _VideoCallScreenState();
 }
 
 class _VideoCallScreenState extends State<VideoCallScreen> {
+  int? _remoteUid;
   bool _localUserJoined = false;
   bool _remotUserJoined = false;
   late RtcEngine _engine;
@@ -56,13 +60,14 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
 
     _addAgoraEventHandlers();
     await _engine.enableAudioVolumeIndication(200, 3, true);
-    await _engine.joinChannel(token, widget.channelName, null, 0);
+    await _engine.joinChannel(
+        widget.tokenData.token, widget.channelName, null, 0);
     await _engine.enableDualStreamMode(true);
-    await _engine.setParameters("""
-         { "che.video.lowBitRateStreamParameter": {
-           "width":160,"height":120,"frameRate":5,"bitRate":45
-         }}
-       """);
+    // await _engine.setParameters("""
+    //      { "che.video.lowBitRateStreamParameter": {
+    //        "width":160,"height":120,"frameRate":5,"bitRate":45
+    //      }}
+    //    """);
   }
 
   // Future<void> initAgora() async {
@@ -120,6 +125,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
       joinChannelSuccess: (String channel, int uid, int elapsed) {
         setState(() {
           final info = 'onJoinChannel: $channel, uid: $uid';
+          customSnackBar(false, context, info);
           _infoStrings.add(info);
           _localUserJoined = true;
         });
@@ -127,26 +133,35 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
       leaveChannel: (stats) {
         setState(() {
           _infoStrings.add('onLeaveChannel');
+          customSnackBar(true, context, "user leaves");
           _users.clear();
-          //  _localUserJoined = false;
+          _localUserJoined = false;
         });
       },
       userJoined: (int uid, int elapsed) {
         setState(() {
           final info = 'userJoined: $uid';
+          customSnackBar(true, context, info);
           _infoStrings.add(info);
+          setState(() {
+            _remoteUid = uid;
+          });
+          _engine.setRemoteDefaultVideoStreamType(VideoStreamType.High);
           _users.add(uid);
         });
-        if (_users.length >= 5) {
-          print("Fallback to Low quality video stream");
-          _engine.setRemoteDefaultVideoStreamType(VideoStreamType.Low);
-        }
+        // if (_users.length >= 5) {
+        //   print("Fallback to Low quality video stream");
+        //   // _engine.setRemoteDefaultVideoStreamType(VideoStreamType.Low);
+        // }
       },
       userOffline: (int uid, reason) {
         setState(() {
           final info = 'userOffline: $uid , reason: $reason';
+          customSnackBar(true, context, info);
           _infoStrings.add(info);
           _users.remove(uid);
+          _remoteUid = null;
+          _remotUserJoined = false;
         });
         if (_users.length <= 3) {
           print("Go back to High quality video stream");
@@ -162,23 +177,45 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
       appBar: AppBar(
         title: const Text('Video Call'),
       ),
-      body: Center(
-        child: Stack(
-          children: <Widget>[
-            _viewRows(),
-            _toolbar(),
-          ],
-        ),
+      body: Stack(
+        children: [
+          Center(
+            child: _remoteVideo(),
+          ),
+          _toolbar(),
+          Align(
+            alignment: Alignment.topLeft,
+            child: SizedBox(
+              width: 100,
+              height: 150,
+              child: Center(
+                child: _localUserJoined
+                    ? const rtc_local_view.SurfaceView()
+                    : const CircularProgressIndicator(
+                        backgroundColor: Colors.red,
+                        color: Colors.white,
+                      ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   // Display remote user's video
-  Widget _remoteVideo(int uid) {
-    return rtc_remote_view.SurfaceView(
-      uid: uid,
-      channelId: widget.channelName,
-    );
+  Widget _remoteVideo() {
+    if (_remoteUid != null) {
+      return rtc_remote_view.SurfaceView(
+        uid: _remoteUid!,
+        channelId: widget.channelName,
+      );
+    } else {
+      return const Text(
+        'Please wait for remote user to join',
+        textAlign: TextAlign.center,
+      );
+    }
   }
 
   List<Widget> _getRenderViews() {
@@ -189,7 +226,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
         _remotUserJoined = true;
       });
       for (var uid in _users) {
-        list.add(_remoteVideo(uid));
+        list.add(_remoteVideo());
       }
     }
     return list;
@@ -208,37 +245,40 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
   // Video view row wrapper
   Widget _expandedVideoRow(List<Widget> views) {
     final wrappedViews = views.map<Widget>(_videoView).toList();
-    return Expanded(
-      child: Row(
-        children: wrappedViews,
-      ),
+    return Wrap(
+      children: wrappedViews,
     );
   }
 
   Widget _viewRows() {
     if (!_localUserJoined) {
-      return const CircularProgressIndicator(
-        backgroundColor: Colors.red,
-        color: Colors.white,
+      return const Center(
+        child: CircularProgressIndicator(
+          backgroundColor: Colors.red,
+          color: Colors.white,
+        ),
       );
     } else {
       final views = _getRenderViews();
       if (views.length == 1 && !_remotUserJoined) {
         return SizedBox(
+          height: MediaQuery.of(context).size.height - 120,
           child: Column(
             children: <Widget>[_videoView(views[0])],
           ),
         );
       } else if (views.length == 2) {
         return SizedBox(
+            height: MediaQuery.of(context).size.height - 120,
             child: Column(
-          children: <Widget>[
-            _expandedVideoRow([views[0]]),
-            _expandedVideoRow([views[1]])
-          ],
-        ));
+              children: <Widget>[
+                _expandedVideoRow([views[0]]),
+                _expandedVideoRow([views[1]])
+              ],
+            ));
       } else if (views.length > 2 && views.length % 2 == 0) {
         return SizedBox(
+          height: MediaQuery.of(context).size.height - 120,
           child: Column(
             children: [
               for (int i = 0; i < views.length; i = i + 2)
@@ -250,6 +290,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
         );
       } else if (views.length > 2 && views.length % 2 != 0) {
         return SizedBox(
+          height: MediaQuery.of(context).size.height - 120,
           child: Column(
             children: <Widget>[
               for (int i = 0; i < views.length; i = i + 2)
