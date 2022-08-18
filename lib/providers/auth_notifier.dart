@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:smart_health_assistant/api/doctor_api.dart';
+// import 'package:smart_health_assistant/api/doctor_api.dart';
 import 'package:smart_health_assistant/models/doctor.dart';
 import '../api/auth_api.dart';
 
@@ -17,6 +17,7 @@ class AuthNotifier extends ChangeNotifier {
     var response = await signIn(loginCredintial);
     if (response!.statusCode == 200) {
       await setLogIn(response.body);
+      loggedInUser = response.body;
       isLogin = true;
     } else {
       errorMessage = response.body;
@@ -43,13 +44,13 @@ class AuthNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> getLoggedUser() async {
+  void getLoggedUser() async {
     SharedPreferences? loginPreferences = await SharedPreferences.getInstance();
-    doctorList = await getDoctorsData();
+    // doctorList = await getDoctorsData();
     loggedInUser = jsonDecode(loginPreferences.getString("user")!);
     // print(loggedInUser["id"]);
     isLogin = loginPreferences.getBool("isLogin")!;
-    return isLogin;
+    notifyListeners();
   }
 
   Future<void> logout() async {

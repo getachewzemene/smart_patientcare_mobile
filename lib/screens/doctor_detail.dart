@@ -31,25 +31,30 @@ class _DoctorDetailState extends State<DoctorDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Expanded(child: initWidget()),
-      ),
-    );
+        backgroundColor: contentColor, body: SafeArea(child: initWidget()));
   }
 
   Widget initWidget() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Stack(
-          children: [
-            buildDoctorImage(),
-            buildAppBar(),
-          ],
-        ),
-        buildDoctorDescription()
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ClipRRect(
+            borderRadius:
+                const BorderRadius.vertical(bottom: Radius.circular(50)),
+            child: SizedBox(
+              child: Stack(
+                children: [
+                  buildDoctorImage(),
+                  buildAppBar(),
+                ],
+              ),
+            ),
+          ),
+          buildDoctorDescription()
+        ],
+      ),
     );
   }
 
@@ -98,7 +103,6 @@ class _DoctorDetailState extends State<DoctorDetail> {
 
   Widget buildDoctorImage() {
     return Container(
-      height: 250.0,
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.only(bottom: 20.0),
       child: Image.network(
@@ -109,203 +113,161 @@ class _DoctorDetailState extends State<DoctorDetail> {
   }
 
   Widget buildDoctorDescription() {
-    return ClipRRect(
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-      child: Container(
-        height: MediaQuery.of(context).size.height - 300,
-        color: contentColor,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(left: 20, top: 20),
-                  child: Text(
-                    widget.name,
-                    style: const TextStyle(
-                        fontSize: 28, fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ],
+    return Container(
+      padding: const EdgeInsets.only(left: 10.0, top: 10),
+      // height: MediaQuery.of(context).size.height,
+      color: contentColor,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            widget.name,
+            style: const TextStyle(
+                fontSize: 20, color: Colors.white, fontWeight: FontWeight.w600),
+          ),
+          const Text(
+            "Specialization",
+            style: TextStyle(fontSize: 16.5, color: Colors.white),
+          ),
+          Text(
+            widget.specialization,
+            style: const TextStyle(fontSize: 16.5, color: Colors.white),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text(
+              'Phone: ${widget.phone}',
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.yellowAccent,
+              ),
+              textAlign: TextAlign.justify,
             ),
-            Container(
-              margin: const EdgeInsets.only(left: 20),
-              child: Text(
-                widget.specialization,
-                style: const TextStyle(fontSize: 16.5, color: Colors.black),
+          ),
+          const Text(
+            "Description",
+            style: TextStyle(
+              fontSize: 18,
+              color: Colors.black,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text(
+              "${widget.name} is one of the best doctor in Ethiopai and has 10 years of experience. ${widget.gender == "male" ? "He" : "She"} has done a lot in the health industry",
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.black,
               ),
             ),
-            Container(
-              margin: const EdgeInsets.only(left: 20, top: 15),
-              child: Row(
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
                 children: [
-                  Container(
-                    margin: const EdgeInsets.only(left: 10),
-                    child: Text(
-                      "Address: ${widget.address}, Ethiopia",
-                      style:
-                          const TextStyle(fontSize: 16.5, color: Colors.black),
+                  const Text(
+                    "Reviews",
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
                     ),
+                  ),
+                  Wrap(
+                    children: const [
+                      Text(
+                        "4.9",
+                        style: TextStyle(fontSize: 14, color: Colors.black),
+                      ),
+                      SizedBox(
+                        width: 6.0,
+                      ),
+                      Icon(
+                        Icons.star_border,
+                        size: 20.0,
+                        color: Colors.yellow,
+                      )
+                    ],
                   ),
                 ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text(
-                'Phone: ${widget.phone}',
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black,
-                ),
-                textAlign: TextAlign.justify,
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(left: 20, top: 30),
+              Column(
+                children: const [
+                  Text("Patients",
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black,
+                      )),
+                  Text(
+                    "22k",
+                    style: TextStyle(fontSize: 14, color: Colors.black),
+                  ),
+                ],
+              )
+            ],
+          ),
+          const SizedBox(
+            height: 20.0,
+          ),
+          Container(
+            margin: const EdgeInsets.fromLTRB(40.0, 0, 40.0, 0),
+            height: 40.0,
+            child: MaterialButton(
               child: const Text(
-                "Description",
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w600,
-                ),
+                "Book appointment",
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text(
-                "${widget.name} is one of the best doctor in Ethiopai and has 10 years of experience. ${widget.gender == "male" ? "He" : "She"} has done a lot in the health industry",
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black,
-                ),
-                textAlign: TextAlign.justify,
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      margin: const EdgeInsets.only(right: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "Reviews",
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black,
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(top: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.only(left: 10),
-                                  child: const Text(
-                                    "4.9",
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.black),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.grey, width: 0.5),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      margin: const EdgeInsets.only(left: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "Patients",
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black,
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(top: 10),
-                            // ignore: avoid_unnecessary_containers
-                            child: Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(left: 10),
-                                    child: const Text(
-                                      "22k",
-                                      style: TextStyle(
-                                          fontSize: 14, color: Colors.black),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.grey, width: 0.5),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            InkWell(
-              onTap: (() => Navigator.pushReplacement(
+              color: const Color.fromARGB(255, 55, 116, 87),
+              textColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)),
+              onPressed: (() => Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                       builder: (context) => AppointmentScreen(
                             doctorId: widget.id,
                           )))),
-              child: Container(
-                margin: const EdgeInsets.only(top: 20, left: 70, right: 20),
-                height: 45,
-                width: MediaQuery.of(context).size.width - 150,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 26, 112, 96),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Text(
-                  "Book appointment",
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white),
-                ),
-              ),
             ),
-          ],
-        ),
+          ),
+          const SizedBox(
+            height: 20.0,
+          )
+        ],
       ),
     );
+    //         InkWell(
+    //           onTap: (() => Navigator.pushReplacement(
+    //               context,
+    //               MaterialPageRoute(
+    //                   builder: (context) => AppointmentScreen(
+    //                         doctorId: widget.id,
+    //                       )))),
+    //           child: Column(
+    //             children: [
+    //               Flexible(
+    //                 child: Container(
+    //                   alignment: Alignment.center,
+    //                   decoration: BoxDecoration(
+    //                     color: Color.fromARGB(255, 26, 112, 96),
+    //                     borderRadius: BorderRadius.circular(10),
+    //                   ),
+    //                   child: const Text(
+    //                     "Book appointment",
+    //                     style: TextStyle(
+    //                         fontSize: 16,
+    //                         fontWeight: FontWeight.w600,
+    //                         color: Colors.white),
+    //                   ),
+    //                 ),
+    //               ),
+    //             ],
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    // );
   }
 }

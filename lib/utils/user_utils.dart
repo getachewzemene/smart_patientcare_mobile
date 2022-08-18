@@ -26,5 +26,6 @@ String generateId() {
 Future<String?> getCurrentUser() async {
   SharedPreferences userPreference = await SharedPreferences.getInstance();
   currentUser = userPreference.getString("user");
+  // print(currentUser);
   return currentUser;
 }

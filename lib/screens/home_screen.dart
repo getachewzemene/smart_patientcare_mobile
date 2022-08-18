@@ -11,7 +11,6 @@ import 'package:smart_health_assistant/screens/welcome_screen.dart';
 import 'package:smart_health_assistant/widgets/sidebar_menu.dart';
 import '../models/doctor.dart';
 import '../providers/auth_notifier.dart';
-import '../providers/specialist_provider.dart';
 import '../widgets/bottom_navigation.dart';
 import '../widgets/category_card.dart';
 import 'doctor_detail.dart';
@@ -32,9 +31,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    var apiNotifier = Provider.of<ApiNotifier>(context, listen: false);
-    apiNotifier.getDoctorsList();
+    getDoctorLists();
     super.initState();
+  }
+
+  Future<void> getDoctorLists() async {
+    var apiNotifier = Provider.of<ApiNotifier>(context, listen: false);
+    await apiNotifier.getDoctorsList();
   }
 
   toggleMenu([bool end = false]) {
@@ -260,23 +263,36 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(
                       height: 260.0,
                       child: Consumer<ApiNotifier>(
-                          builder: ((context, value, child) => ListView.builder(
-                              itemCount: 3,
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              physics: const ScrollPhysics(),
-                              controller: ScrollController(),
-                              itemBuilder: ((context, index) {
-                                var doctorData = value.doctorList;
-                                if (doctorData.isEmpty) {
-                                  return const CircularProgressIndicator(
-                                    strokeWidth: 3.0,
-                                    backgroundColor: Colors.red,
-                                    color: Colors.lightBlue,
-                                  );
-                                }
-                                return topDoctorsList(doctorData[index]!);
-                              })))))
+                          builder: ((context, value, child) {
+                        if (!value.isLoading && value.doctorList.isEmpty) {
+                          return const Center(
+                            child: Text("Offline data not available now"),
+                          );
+                        } else if (value.isLoading &&
+                            value.doctorList.isEmpty) {
+                          return Center(
+                              child: Stack(
+                            children: const [
+                              CircularProgressIndicator(
+                                strokeWidth: 4.0,
+                                backgroundColor: Colors.red,
+                                color: Colors.lightBlue,
+                              ),
+                              Text("Wating....")
+                            ],
+                          ));
+                        }
+                        return ListView.builder(
+                            itemCount: 3,
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            physics: const ScrollPhysics(),
+                            controller: ScrollController(),
+                            itemBuilder: ((context, index) {
+                              var doctorData = value.doctorList;
+                              return topDoctorsList(doctorData[index]!);
+                            }));
+                      })))
                 ]),
               ),
             ),

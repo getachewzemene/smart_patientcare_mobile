@@ -1,8 +1,11 @@
+import 'dart:convert';
 import "package:flutter/material.dart";
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:smart_health_assistant/api/doctor_api.dart';
 import 'package:smart_health_assistant/providers/auth_notifier.dart';
+import 'package:smart_health_assistant/screens/doctor_screen.dart';
 import 'package:smart_health_assistant/screens/home_screen.dart';
 import "../constants/widget_params.dart";
 import 'custom_snackbar.dart';
@@ -126,11 +129,26 @@ class _SignInFormState extends State<SignInForm> {
       };
       await authNotifier.notifySignIn(loginCredintial);
       if (authNotifier.isLogin == true) {
-        customSnackBar(false, context, "sign in success");
-        _emailController.clear();
-        _passController.clear();
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()));
+        var loggedUser = jsonDecode(authNotifier.loggedInUser);
+        var role = loggedUser["role"];
+        // print(loggedUser["role"]);
+        // print(authNotifier.isLogin);
+        if (role == "geust") {
+          customSnackBar(false, context, "sign in success");
+          _emailController.clear();
+          _passController.clear();
+
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const HomeScreen()));
+        } else {
+          customSnackBar(false, context, "sign in success");
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => DoctorScreen(
+                        id: loggedUser["id"],
+                      )));
+        }
       } else {
         customSnackBar(true, context, authNotifier.errorMessage);
         _emailController.clear();

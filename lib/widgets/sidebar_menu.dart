@@ -6,7 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_health_assistant/providers/auth_notifier.dart';
 import 'package:smart_health_assistant/screens/doctors_list_screen.dart';
 import 'package:smart_health_assistant/screens/home_screen.dart';
+import 'package:smart_health_assistant/screens/patient_history_screen.dart';
 import 'package:smart_health_assistant/screens/welcome_screen.dart';
+
+import '../screens/map.dart';
 
 class SidebarMenu extends StatefulWidget {
   const SidebarMenu({Key? key}) : super(key: key);
@@ -81,9 +84,39 @@ class _SidebarMenuState extends State<SidebarMenu> {
                   ),
                   ListTile(
                     onTap: () {},
-                    leading: const Icon(Icons.verified_user,
+                    leading: const Icon(Icons.key_sharp,
                         size: 20.0, color: Colors.white),
-                    title: const Text("Profile"),
+                    title: const Text("change password"),
+                    textColor: Colors.white,
+                    dense: true,
+
+                    // padding: EdgeInsets.zero,
+                  ),
+                  ListTile(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const DoctorsListScreen()));
+                    },
+                    leading: const Icon(Icons.message,
+                        size: 20.0, color: Colors.white),
+                    title: const Text("View appointment"),
+                    textColor: Colors.white,
+                    dense: true,
+
+                    // padding: EdgeInsets.zero,
+                  ),
+                  ListTile(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const DoctorsListScreen()));
+                    },
+                    leading: const Icon(Icons.medical_information,
+                        size: 20.0, color: Colors.white),
+                    title: const Text("Prescription"),
                     textColor: Colors.white,
                     dense: true,
 
@@ -98,9 +131,24 @@ class _SidebarMenuState extends State<SidebarMenu> {
                     },
                     leading: const Icon(Icons.person_add,
                         size: 20.0, color: Colors.white),
-                    title: const Text("Appointment"),
+                    title: const Text("Add appointment"),
                     textColor: Colors.white,
                     dense: true,
+                  ),
+                  ListTile(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const PatientHistory()));
+                    },
+                    leading: const Icon(Icons.history,
+                        size: 20.0, color: Colors.white),
+                    title: const Text("History"),
+                    textColor: Colors.white,
+                    dense: true,
+
+                    // padding: EdgeInsets.zero,
                   ),
                   ListTile(
                     onTap: () {
@@ -112,6 +160,21 @@ class _SidebarMenuState extends State<SidebarMenu> {
                     leading: const Icon(Icons.person,
                         size: 20.0, color: Colors.white),
                     title: const Text("Doctors"),
+                    textColor: Colors.white,
+                    dense: true,
+
+                    // padding: EdgeInsets.zero,
+                  ),
+                  ListTile(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const MapScreen()));
+                    },
+                    leading:
+                        const Icon(Icons.map, size: 20.0, color: Colors.white),
+                    title: const Text("Map"),
                     textColor: Colors.white,
                     dense: true,
 

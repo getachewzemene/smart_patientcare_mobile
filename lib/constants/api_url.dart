@@ -1,2 +1,2 @@
-const BASE_URL = "http://192.168.0.4:4000/";
+const BASE_URL = "http://localhost:4000/";
 String get getBaseUrl => BASE_URL;

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:smart_health_assistant/constants/widget_params.dart';
 import 'package:smart_health_assistant/screens/doctors_list_screen.dart';
-import 'package:smart_health_assistant/screens/video_call/videocall_screen_wrapper.dart';
+
+import '../screens/video_call/join_meeting_screen.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({Key? key}) : super(key: key);
@@ -18,10 +19,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
   _goToScreen(index) {
     switch (index) {
       case 1:
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const VideoCallScreenWrapper()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const JoinMeetingScreen()));
         break;
       case 2:
         Navigator.push(context,

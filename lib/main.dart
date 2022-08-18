@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:smart_health_assistant/providers/api_notifier.dart';
 import 'package:smart_health_assistant/providers/auth_notifier.dart';
+import 'package:smart_health_assistant/screens/doctor_screen.dart';
 import 'package:smart_health_assistant/screens/welcome_screen.dart';
 import 'package:smart_health_assistant/utils/user_utils.dart';
 import '/providers/map_provider.dart';
@@ -38,9 +39,14 @@ Future<bool> startForegroundService() async {
   return FlutterBackground.enableBackgroundExecution();
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends StatefulWidget {
   const MainApp({Key? key}) : super(key: key);
 
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
+
+class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {
@@ -65,10 +71,18 @@ class MainApp extends StatelessWidget {
               home: FutureBuilder(
                   future: getCurrentUser(),
                   builder: ((context, _) {
-                    // var isUser = jsonDecode(currentUser);
-                    return currentUser != null
-                        ? const HomeScreen()
-                        : const WelcomeScreen();
+                    if (currentUser != null) {
+                      var data = jsonDecode(currentUser);
+                      var role = data["role"];
+                      // print(role);
+                      if (role == "doctor") {
+                        return DoctorScreen(id: data["id"]);
+                      }
+                      if (role == "geust") {
+                        return const HomeScreen();
+                      }
+                    }
+                    return const WelcomeScreen();
                   }))));
     });
   }

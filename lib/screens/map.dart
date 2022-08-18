@@ -20,8 +20,14 @@ class _MapScreenState extends State<MapScreen> {
   final Set<Marker> _markers = {};
 
   LatLng _lastMapPosition = _center;
-
+  MapProvider? mapProvider;
   MapType _currentMapType = MapType.normal;
+  @override
+  void initState() {
+    mapProvider = Provider.of<MapProvider>(context, listen: false);
+    mapProvider!.setCurrentLocation();
+    super.initState();
+  }
 
   void _onMapTypeButtonPressed() {
     setState(() {
@@ -56,97 +62,67 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final mapProvider = Provider.of<MapProvider>(context);
     return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: (mapProvider.currentLocation == null)
-            ? const Center(child: CircularProgressIndicator())
-            : Column(mainAxisSize: MainAxisSize.min, children: [
-                Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                        controller: searchController,
-                        decoration: const InputDecoration(
-                            hintText: "Search Location",
-                            suffixIcon: Icon(Icons.search)),
-                        onChanged: (value) => mapProvider.searchPlaces(value))),
-                Stack(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 630.0,
-                      child: GoogleMap(
-                        onMapCreated: _onMapCreated,
-                        initialCameraPosition: CameraPosition(
-                          target: LatLng(mapProvider.currentLocation!.latitude,
-                              mapProvider.currentLocation!.longitude),
-                          zoom: 14.0,
-                        ),
-                        mapType: _currentMapType,
-                        mapToolbarEnabled: true,
-                        myLocationEnabled: true,
-                        markers: _markers,
-                        onCameraMove: _onCameraMove,
+        child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: Stack(
+              children: <Widget>[
+                SizedBox(
+                  child: GoogleMap(
+                    onMapCreated: _onMapCreated,
+                    initialCameraPosition: const CameraPosition(
+                      target: LatLng(11.574209, 37.361353),
+                      zoom: 14.0,
+                    ),
+                    mapType: _currentMapType,
+                    mapToolbarEnabled: true,
+                    myLocationEnabled: true,
+                    markers: _markers,
+                    onCameraMove: _onCameraMove,
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: Column(
+                        children: <Widget>[
+                          FloatingActionButton(
+                            onPressed: _onMapTypeButtonPressed,
+                            materialTapTargetSize: MaterialTapTargetSize.padded,
+                            backgroundColor: Colors.green,
+                            child: const Icon(Icons.map, size: 36.0),
+                          ),
+                          const SizedBox(height: 16.0),
+                          FloatingActionButton(
+                            onPressed: _onAddMarkerButtonPressed,
+                            materialTapTargetSize: MaterialTapTargetSize.padded,
+                            backgroundColor: Colors.green,
+                            child: const Icon(Icons.add_location, size: 36.0),
+                          ),
+                        ],
                       ),
                     ),
-                    if (mapProvider.placeSearchResults != null &&
-                        mapProvider.placeSearchResults!.isNotEmpty)
-                      Container(
-                        height: 300.0,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(.6),
-                          backgroundBlendMode: BlendMode.darken,
-                        ),
-                      ),
-                    if (mapProvider.placeSearchResults != null &&
-                        mapProvider.placeSearchResults!.isNotEmpty)
-                      SizedBox(
-                        height: 300.0,
-                        child: ListView.builder(
-                            itemCount: mapProvider.placeSearchResults!.length,
-                            itemBuilder: (context, index) => ListTile(
-                                  title: Text(
-                                    mapProvider
-                                        .placeSearchResults![index].description,
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                )),
-                      ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Align(
-                          alignment: Alignment.topRight,
-                          child: Column(
-                            children: <Widget>[
-                              FloatingActionButton(
-                                onPressed: _onMapTypeButtonPressed,
-                                materialTapTargetSize:
-                                    MaterialTapTargetSize.padded,
-                                backgroundColor: Colors.green,
-                                child: const Icon(Icons.map, size: 36.0),
-                              ),
-                              const SizedBox(height: 16.0),
-                              FloatingActionButton(
-                                onPressed: _onAddMarkerButtonPressed,
-                                materialTapTargetSize:
-                                    MaterialTapTargetSize.padded,
-                                backgroundColor: Colors.green,
-                                child:
-                                    const Icon(Icons.add_location, size: 36.0),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
+                  ),
+                ),
+                InkWell(
+                  onTap: (() => Navigator.pop(context)),
+                  child: const Padding(
+                    padding: EdgeInsets.only(top: 10.0, left: 20.0),
+                    child: Positioned(
+                        top: 0,
+                        left: 0,
+                        child: Icon(
+                          Icons.arrow_back_ios_sharp,
+                          color: Colors.red,
+                          size: 30.0,
+                        )),
+                  ),
                 )
-              ]),
-      ),
-    );
+              ],
+            )));
   }
 }

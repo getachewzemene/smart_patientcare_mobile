@@ -8,9 +8,10 @@ Map<String, String> requestHeaders = {
   "accept": "application/json"
 };
 Future<http.Response?> getToken(Map<String, dynamic> tokenData) async {
-  var response = await http.post(Uri.parse(BASE_URL + "/rtc-token"),
+  // print(tokenData);
+  var response = await http.post(Uri.parse(BASE_URL + "rtc-token"),
       headers: requestHeaders, body: jsonEncode(tokenData));
-  print(response.body);
+  // print(response.body);
   // print(response.statusCode);
 
   return response;

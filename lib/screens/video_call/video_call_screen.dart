@@ -7,14 +7,18 @@ import 'package:smart_health_assistant/widgets/custom_snackbar.dart';
 
 const appId = "19640a9b4858430593643c0f0d88aa04";
 const token =
-    "006cd57515713a342bca69b051e01ecc9a8IAACK/dFWrbXwBeXAwmRnMbeWkZ3LF6yrwUUYoK4GeAOF4CU4W8AAAAAEABiLYCECfn5YgEAAQAI+fli";
+    "00619640a9b4858430593643c0f0d88aa04IABrIwACSzqEsHBAo3EibnEAv2UMzrMaBa4W52Iau+3oI6Pg45sAAAAAEACWH508zSX9YgEAAQDMJf1i";
 
 class VideoCallScreen extends StatefulWidget {
   const VideoCallScreen(
-      {Key? key, required this.channelName, required this.tokenData})
+      {Key? key,
+      required this.channelName,
+      required this.uid,
+      required this.token})
       : super(key: key);
   final String channelName;
-  final tokenData;
+  final uid;
+  final token;
   @override
   State<VideoCallScreen> createState() => _VideoCallScreenState();
 }
@@ -61,7 +65,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
     _addAgoraEventHandlers();
     await _engine.enableAudioVolumeIndication(200, 3, true);
     await _engine.joinChannel(
-        widget.tokenData.token, widget.channelName, null, 0);
+        widget.token, widget.channelName, null, widget.uid);
     await _engine.enableDualStreamMode(true);
     // await _engine.setParameters("""
     //      { "che.video.lowBitRateStreamParameter": {
@@ -111,64 +115,59 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
   }
 
   void _addAgoraEventHandlers() {
-    _engine.setEventHandler(RtcEngineEventHandler(
-      activeSpeaker: (uid) {
-        final String info = "Active speaker: $uid";
-        print(info);
-      },
-      error: (code) {
+    _engine.setEventHandler(RtcEngineEventHandler(activeSpeaker: (uid) {
+      final String info = "Active speaker: $uid";
+      print(info);
+    }, error: (code) {
+      setState(() {
+        final info = 'onError: $code';
+        _infoStrings.add(info);
+      });
+    }, joinChannelSuccess: (String channel, int uid, int elapsed) {
+      setState(() {
+        final info = 'onJoinChannel: $channel, uid: $uid';
+        customSnackBar(false, context, info);
+        _infoStrings.add(info);
+        _localUserJoined = true;
+      });
+    }, leaveChannel: (stats) {
+      setState(() {
+        _infoStrings.add('onLeaveChannel');
+        customSnackBar(true, context, "user leaves");
+        _users.clear();
+        _localUserJoined = false;
+      });
+    }, userJoined: (int uid, int elapsed) {
+      setState(() {
+        final info = 'userJoined: $uid';
+        customSnackBar(true, context, info);
+        _infoStrings.add(info);
         setState(() {
-          final info = 'onError: $code';
-          _infoStrings.add(info);
+          _remoteUid = uid;
         });
-      },
-      joinChannelSuccess: (String channel, int uid, int elapsed) {
-        setState(() {
-          final info = 'onJoinChannel: $channel, uid: $uid';
-          customSnackBar(false, context, info);
-          _infoStrings.add(info);
-          _localUserJoined = true;
-        });
-      },
-      leaveChannel: (stats) {
-        setState(() {
-          _infoStrings.add('onLeaveChannel');
-          customSnackBar(true, context, "user leaves");
-          _users.clear();
-          _localUserJoined = false;
-        });
-      },
-      userJoined: (int uid, int elapsed) {
-        setState(() {
-          final info = 'userJoined: $uid';
-          customSnackBar(true, context, info);
-          _infoStrings.add(info);
-          setState(() {
-            _remoteUid = uid;
-          });
-          _engine.setRemoteDefaultVideoStreamType(VideoStreamType.High);
-          _users.add(uid);
-        });
-        // if (_users.length >= 5) {
-        //   print("Fallback to Low quality video stream");
-        //   // _engine.setRemoteDefaultVideoStreamType(VideoStreamType.Low);
-        // }
-      },
-      userOffline: (int uid, reason) {
-        setState(() {
-          final info = 'userOffline: $uid , reason: $reason';
-          customSnackBar(true, context, info);
-          _infoStrings.add(info);
-          _users.remove(uid);
-          _remoteUid = null;
-          _remotUserJoined = false;
-        });
-        if (_users.length <= 3) {
-          print("Go back to High quality video stream");
-          _engine.setRemoteDefaultVideoStreamType(VideoStreamType.High);
-        }
-      },
-    ));
+        _engine.setRemoteDefaultVideoStreamType(VideoStreamType.High);
+        _users.add(uid);
+      });
+      // if (_users.length >= 5) {
+      //   print("Fallback to Low quality video stream");
+      //   // _engine.setRemoteDefaultVideoStreamType(VideoStreamType.Low);
+      // }
+    }, userOffline: (int uid, reason) {
+      setState(() {
+        final info = 'userOffline: $uid , reason: $reason';
+        customSnackBar(true, context, info);
+        _infoStrings.add(info);
+        _users.remove(uid);
+        _remoteUid = null;
+        _remotUserJoined = false;
+      });
+      if (_users.length <= 3) {
+        // print("Go back to High quality video stream");
+        _engine.setRemoteDefaultVideoStreamType(VideoStreamType.High);
+      }
+    }, rejoinChannelSuccess: (String channel, int uid, int elapsed) {
+      customSnackBar(true, context, "user rejoined");
+    }));
   }
 
   @override
